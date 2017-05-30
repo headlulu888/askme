@@ -9,10 +9,14 @@ class User < ActiveRecord::Base
   VALID_USERNAME_REGEXP = /\A\w{4,16}\z/
 
   has_many :questions
+  
+  # before_validates :downcase_username
+  
   attr_accessor :password
 
   validates :email, :username, presence: true
   validates :email, :username, uniqueness: true
+  validates :username, uniqueness: {case_sensitive: false}
 
   validates :username, length: {maximum: 40}, format: { with: VALID_USERNAME_REGEXP }
   validates :email, format: { with: VALID_EMAIL_REGEXP }
@@ -21,7 +25,9 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password
 
   before_save :encrypt_password
+  before_save :downcase_username
 
+  # шифрование пароля
   def encrypt_password
     if self.password.present?
       # создаем "соль" - рандомная строка усложняющая задачу хакерам
@@ -52,4 +58,10 @@ class User < ActiveRecord::Base
       nil
     end
   end
+
+  # преобразует в нижний регистр
+  def downcase_username
+    self.username.downcase!
+  end
+
 end
