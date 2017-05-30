@@ -5,12 +5,17 @@ class User < ActiveRecord::Base
   ITERATIONS = 20000
   DIGEST = OpenSSL::Digest::SHA256.new
 
+  VALID_EMAIL_REGEXP = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  VALID_USERNAME_REGEXP = /\A\w{4,16}\z/
+
   has_many :questions
+  attr_accessor :password
 
   validates :email, :username, presence: true
   validates :email, :username, uniqueness: true
 
-  attr_accessor :password
+  validates :username, length: {maximum: 40}, format: { with: VALID_USERNAME_REGEXP }
+  validates :email, format: { with: VALID_EMAIL_REGEXP }
 
   validates_presence_of :password, on: :create
   validates_confirmation_of :password
