@@ -1,39 +1,57 @@
 class UsersController < ApplicationController
+
+  before_action :load_user, except: [:index, :create, :new]
+  before_action :authorize_user, except: [:index, :create, :new, :show]
+
   def index
-    @users = [
-      User.new(
-          id: 1, 
-          name: 'Andrey', 
-          username: 'headlulu', 
-          avatar_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNEaD0VjbNSZIF0JS1yFdsShIH4igp1QCmVH65Ae3y2W5dTPeq'
-        ), 
-      User.new(
-          id: 2, 
-          name: 'Misha', 
-          username: 'aristofun'
-        )
-    ]
+    @users = User.all
   end
 
   def new
+    redirect_to root_url, alert: 'Вы уже залогинились' if current_user.present?
+    @user = User.new
+  end
+
+  def create
+    redirect_to root_url, alert: 'Вы уже залогинились' if current_user.present?
+    @user = User.new(user_params)
+
+    if @user.save
+      redirect_to root_url, notice: "Пользователь успешно зарегестрирован!"
+    else
+      render 'new'
+    end
+  end
+
+  def update
+    if @user.update(user_params)
+      redirect_to user_path(@user), notice: "Данные обновленны!"
+    else
+      render 'edit'
+    end
   end
 
   def edit
   end
 
   def show
-    @user = User.new(
-      name: 'Ray', 
-      username: 'headlulu', 
-      avatar_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNEaD0VjbNSZIF0JS1yFdsShIH4igp1QCmVH65Ae3y2W5dTPeq'
-      )
+    # формирует поле по чему можно сортировать
+    @questions = @user.questions.order(created_at: :desc)
+    @new_question = @user.questions.build
+  end
 
-    @questions = [
-      Question.new(text: 'Как дела?', created_at: Date.parse('27.03.2016')),
-      Question.new(text: 'О привет!', created_at: Date.parse('17.04.2016')),
-      Question.new(text: 'Как там склонятор?', created_at: Date.parse('31.05.2017'))
-    ]
+  private
 
-    @new_question = Question.new
+  def authorize_user
+    reject_user unless @user == current_user
+  end
+
+  def load_user
+    @user ||= User.find params[:id]
+  end
+
+  def user_params
+    params.require(:user).permit(:email, :password, :password_confirmation,
+                                 :name, :username, :avatar_url)
   end
 end
