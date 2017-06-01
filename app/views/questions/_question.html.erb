@@ -1,6 +1,9 @@
 <div class="question">
 	<div class="question-content">
 
+		<% question ||= nil %>
+		<% action_icon = question.answer.blank? ? 'reply' : 'pencil' %>
+
 		<div class="question-text text-lead">
 			<%= question.text %>
 		</div>
@@ -12,8 +15,17 @@
 		<% end %>
 
 			<div class="question-date">
-				<%= question.created_at.strftime('%d %b %M:%H') %>
+				<%= l(question.created_at, format: :short) %>
 			</div>
-
 	</div>
+
+	<% if question.user == current_user %>
+    <%# Определяем какая будет иконка, если у вопроса нет ответа, то иконка %>
+    <%# овтета на письмо, иначе — карандашик %>
+    <div class="question-actions">
+      <%= link_to fa_icon(action_icon), edit_question_path(question) %>
+      <%= link_to fa_icon('trash-o'), question_path(question),
+                  method: :delete, data: {confirm: 'Точно удалить вопрос?'} %>
+    </div>
+  <% end %>
 </div>
