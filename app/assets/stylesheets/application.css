@@ -22,6 +22,7 @@
  *= require grid
  *= require button
  *= require form
+ *= require box_color
  *
  * Подключаем стили, специфичные для конкретных view-файлов
  *= require layout
