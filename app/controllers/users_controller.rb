@@ -51,7 +51,7 @@ class UsersController < ApplicationController
   def destroy
     # выход из профиля и удаление юзера
     session[:user_id] = nil
-    @user.delete
+    @user.destroy
 
     redirect_to root_path, notice: 'Пользователь удален!'
   end
