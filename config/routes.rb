@@ -2,7 +2,7 @@
 
   root 'users#index'
 
-  resources :users, except: [:destroy] # каких экшенов не будет в контроллере!
+  resources :users
   resources :sessions, only: [:new, :create, :destroy]
   resources :questions, except: [:show, :new, :index]
 

@@ -4,3 +4,8 @@
     height: 30px;
     padding: 0;
 }
+
+.btn-destroy {
+    background-color: #ef466c;
+    color: #fff;
+}

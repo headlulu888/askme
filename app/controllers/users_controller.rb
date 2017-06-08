@@ -48,6 +48,14 @@ class UsersController < ApplicationController
     @unanswered_count = @questions_count - @answers_count
   end
 
+  def destroy
+    # выход из профиля и удаление юзера
+    session[:user_id] = nil
+    @user.delete
+
+    redirect_to root_path, notice: 'Пользователь удален!'
+  end
+
   private
 
   def authorize_user
