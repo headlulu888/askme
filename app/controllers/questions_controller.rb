@@ -10,11 +10,12 @@ class QuestionsController < ApplicationController
   # POST /questions
   def create
     @question = Question.new(question_params)
+    @question.author_user = current_user if current_user.present?
 
-    # автор вопроса
-    if current_user
-      @question.author_user_id = current_user.id
-    end
+    # # автор вопроса
+    # if current_user
+    #   @question.author_user_id = current_user.id
+    # end
 
     if @question.save
       redirect_to user_path(@question.user), notice: 'Вопрос задан.'
