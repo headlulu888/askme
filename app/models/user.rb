@@ -7,15 +7,13 @@ class User < ActiveRecord::Base
 
   VALID_EMAIL_REGEXP = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   VALID_USERNAME_REGEXP = /\A\w{4,16}\z/
-  VALID_COLOR_REGEXP = /\A#?(?:[A-F0-9]{3}){1,2}\z/i
+  VALID_COLOR_REGEXP = /\A#[A-Fa-f0-9]{6}\z/
 
   has_many :questions
-
   attr_accessor :password
 
   validates :email, :username, presence: true
   validates :email, :username, uniqueness: true
-  # validates :username, uniqueness: {case_sensitive: false}
 
   validates :username, length: {maximum: 40}, format: { with: VALID_USERNAME_REGEXP }
   validates :email, format: { with: VALID_EMAIL_REGEXP }
